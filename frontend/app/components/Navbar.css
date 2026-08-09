@@ -1,0 +1,76 @@
+.navbar {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.navbar-container {
+  max-width: 90%;
+  margin: 0 auto;
+  padding: 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  width: 100%;
+}
+
+.navbar-spacer {
+  flex: 1;
+}
+
+.navbar-logo {
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navbar-logo-img {
+  width: 40px;
+  height: 40px;
+}
+
+.navbar-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.navbar-btn {
+  padding: 8px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.signin-btn {
+  color: #ff8400;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2), inset 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.signin-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.signup-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ff8400;
+  border: none;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.3), inset 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+.signup-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  color: white;
+}
