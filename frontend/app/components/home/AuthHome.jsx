@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/app/lib/supabase/client";
-import Navbar from "../Navbar";
 import "./AuthHome.css";
 
 export default function AuthHome() {
@@ -94,8 +93,6 @@ export default function AuthHome() {
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),transparent_16%,transparent_84%,rgba(255,255,255,0.02))]" />
 
       <div className="auth-home-content">
-        <Navbar />
-        
         <div className="auth-home-header">
           <div className="greeting-box">
             <h1>Hello {userProfile?.full_name?.split(" ")[0]}</h1>
