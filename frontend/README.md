@@ -28,18 +28,21 @@ A modern, full-featured authentication system built with **Next.js** and **Supab
 ## ✨ Features
 
 ✅ **Email & Password Authentication**
+
 - Sign up with email and password
 - Sign in with existing credentials
 - Password confirmation validation
 - Error handling and user feedback
 
 ✅ **OAuth Providers**
+
 - Google OAuth integration
 - GitHub OAuth integration
 - One-click login/signup
 - Automatic user creation
 
 ✅ **Dashboard**
+
 - Protected route (requires authentication)
 - User profile display
 - Session management
@@ -47,6 +50,7 @@ A modern, full-featured authentication system built with **Next.js** and **Supab
 - Auto-redirect to login if not authenticated
 
 ✅ **Security**
+
 - Supabase server-side authentication
 - Secure token handling
 - Protected API routes
@@ -56,14 +60,14 @@ A modern, full-featured authentication system built with **Next.js** and **Supab
 
 ## 🛠 Tech Stack
 
-| Technology | Purpose |
-|-----------|---------|
-| **Next.js 16** | React framework with App Router |
-| **React 19** | UI library |
-| **TypeScript** | Type safety |
-| **Supabase** | Backend & authentication |
-| **Tailwind CSS** | Styling |
-| **Next Auth (Supabase)** | Session management |
+| Technology               | Purpose                         |
+| ------------------------ | ------------------------------- |
+| **Next.js 16**           | React framework with App Router |
+| **React 19**             | UI library                      |
+| **TypeScript**           | Type safety                     |
+| **Supabase**             | Backend & authentication        |
+| **Tailwind CSS**         | Styling                         |
+| **Next Auth (Supabase)** | Session management              |
 
 ---
 
@@ -113,7 +117,8 @@ Root Files
 ## 🚀 Installation
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - npm or yarn
 - Supabase account (free tier available)
 
@@ -157,11 +162,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 ### Google OAuth Setup
 
 #### 1. Create Google Cloud Project
+
 - Go to [Google Cloud Console](https://console.cloud.google.com)
 - Create a new project
 - Enable **Google+ API**
 
 #### 2. Create OAuth Credentials
+
 - Go to **APIs & Services → Credentials**
 - Click **Create Credentials → OAuth 2.0 Client ID**
 - Choose **Web Application**
@@ -177,6 +184,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 - Copy **Client ID** and **Client Secret**
 
 #### 3. Add to Supabase
+
 1. Go to **Authentication → Providers**
 2. Click **Google**
 3. Toggle **Enable**
@@ -188,20 +196,23 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 ### GitHub OAuth Setup
 
 #### 1. Create GitHub OAuth App
+
 - Go to GitHub Settings → **Developer settings → OAuth Apps**
 - Click **New OAuth App**
 - Fill in the form:
   - **App name**: Your app name
   - **Homepage URL**: `http://localhost:3000`
-  - **Authorization callback URL**: 
+  - **Authorization callback URL**:
     ```
     https://your-project.supabase.co/auth/v1/callback?provider=github
     ```
 
 #### 2. Get Credentials
+
 - Copy **Client ID** and **Client Secret**
 
 #### 3. Add to Supabase
+
 1. Go to **Authentication → Providers**
 2. Click **GitHub**
 3. Toggle **Enable**
@@ -237,12 +248,12 @@ npm run lint
 
 ## 🗺️ Available Routes
 
-| Route | Purpose | Auth Required |
-|-------|---------|:-------------:|
-| `/` | Home page | ❌ |
-| `/auth/signin` | Sign in page | ❌ |
-| `/auth/signup` | Sign up page | ❌ |
-| `/dashboard` | User dashboard | ✅ |
+| Route          | Purpose        | Auth Required |
+| -------------- | -------------- | :-----------: |
+| `/`            | Home page      |      ❌       |
+| `/auth/signin` | Sign in page   |      ❌       |
+| `/auth/signup` | Sign up page   |      ❌       |
+| `/dashboard`   | User dashboard |      ✅       |
 
 ---
 
@@ -251,24 +262,28 @@ npm run lint
 ### Authentication Flow
 
 #### Email/Password Sign Up
+
 ```
 User fills form → Validate → Supabase creates account → Success message → Switch to signin
 ```
 
 #### Email/Password Sign In
+
 ```
 User enters credentials → Supabase auth → Session created → Redirect to /dashboard → User logged in
 ```
 
 #### OAuth (Google/GitHub)
+
 ```
-User clicks Google/GitHub button → Redirect to provider → User authenticates → 
+User clicks Google/GitHub button → Redirect to provider → User authenticates →
 Provider redirects back → Supabase creates/updates session → Redirect to /dashboard
 ```
 
 ### Protected Routes
 
 The dashboard automatically:
+
 - Checks if user is authenticated
 - Displays user info (email, sign-in date, ID)
 - Redirects to `/auth/signin` if not logged in
@@ -277,6 +292,7 @@ The dashboard automatically:
 ### Session Management
 
 Sessions are managed by:
+
 - **Browser**: Stored in cookies (client)
 - **Server**: Validated via server client
 - **Supabase**: Central auth provider
@@ -286,6 +302,7 @@ Sessions are managed by:
 ## 📝 Component Overview
 
 ### Auth Component (`Auth.jsx`)
+
 - Handles both sign up and signup flows
 - Toggle between modes
 - Email/password validation
@@ -294,12 +311,14 @@ Sessions are managed by:
 - Loading states
 
 ### Dashboard Component (`Dashboard.jsx`)
+
 - Protected route with auth check
 - User profile display
 - Sign out functionality
 - Automatic redirects
 
 ### Supabase Clients
+
 - **client.ts**: Browser-side authentication (sign up, sign in, OAuth)
 - **server.ts**: Server-side protected routes & session validation
 
@@ -320,6 +339,7 @@ Sessions are managed by:
 ### Update OAuth Redirect URLs
 
 For production, update redirect URIs in:
+
 - **Google Cloud Console**: Add your production domain
 - **GitHub OAuth App**: Update callback URL
 - **Supabase Dashboard**: May auto-detect based on domain

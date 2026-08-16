@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/app/lib/supabase/client';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/app/lib/supabase/client";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -13,12 +13,32 @@ export default function Dashboard() {
   useEffect(() => {
     const checkUser = async () => {
       const { data, error } = await supabase.auth.getUser();
-      
+
       if (error || !data.user) {
-        router.push('/auth/signin');
-      } else {
-        setUser(data.user);
+        router.push("/auth/signin");
+        setLoading(false);
+        return;
       }
+
+      const { data: profileRow, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", data.user.id)
+        .maybeSingle();
+
+      if (profileError) {
+        router.push("/auth/signin");
+        setLoading(false);
+        return;
+      }
+
+      if (!profileRow) {
+        router.push("/onboarding");
+        setLoading(false);
+        return;
+      }
+
+      setUser(data.user);
       setLoading(false);
     };
 
@@ -28,37 +48,62 @@ export default function Dashboard() {
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (!error) {
-      router.push('/auth/signin');
+      router.push("/auth/signin");
     }
   };
 
   if (loading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        Loading...
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ padding: "20px" }}>
+      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
         <h1>Welcome to Dashboard</h1>
-        
+
         {user && (
-          <div style={{ marginBottom: '20px', padding: '20px', backgroundColor: '#f5f5f5', borderRadius: '8px' }}>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>User ID:</strong> {user.id}</p>
-            <p><strong>Signed in:</strong> {new Date(user.created_at).toLocaleDateString()}</p>
+          <div
+            style={{
+              marginBottom: "20px",
+              padding: "20px",
+              backgroundColor: "#f5f5f5",
+              borderRadius: "8px",
+            }}
+          >
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+            <p>
+              <strong>User ID:</strong> {user.id}
+            </p>
+            <p>
+              <strong>Signed in:</strong>{" "}
+              {new Date(user.created_at).toLocaleDateString()}
+            </p>
           </div>
         )}
 
-        <button 
+        <button
           onClick={handleLogout}
           style={{
-            padding: '10px 20px',
-            backgroundColor: '#ff0000',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-            fontSize: '16px'
+            padding: "10px 20px",
+            backgroundColor: "#ff0000",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontSize: "16px",
           }}
         >
           Sign Out
