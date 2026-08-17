@@ -175,7 +175,7 @@ export default function OnboardingForm() {
 
       const { data: profileRow, error: profileError } = await supabase
         .from("profiles")
-        .select("id")
+        .select("*")
         .eq("id", data.user.id)
         .maybeSingle();
 
@@ -185,9 +185,8 @@ export default function OnboardingForm() {
         return;
       }
 
-      if (profileRow) {
-        router.push("/home");
-        return;
+      if (profileRow && profileRow.linkedin_url) {
+        setProfileLinkedInUrl(profileRow.linkedin_url);
       }
 
       setCheckingAccess(false);
