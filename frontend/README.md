@@ -13,7 +13,6 @@ A modern, full-featured authentication system built with **Next.js** and **Supab
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
-- [Project Structure](#project-structure)
 - [Installation](#installation)
 - [Environment Setup](#environment-setup)
 - [OAuth Configuration](#oauth-configuration)
@@ -71,48 +70,7 @@ A modern, full-featured authentication system built with **Next.js** and **Supab
 
 ---
 
-## 📁 Project Structure
 
-```
-app/
-├── (routing)/
-│   ├── auth/
-│   │   ├── signin/
-│   │   │   └── page.tsx          # Sign in page
-│   │   └── signup/
-│   │       └── page.tsx          # Sign up page
-│   └── dashboard/
-│       └── page.tsx              # Protected dashboard
-├── components/
-│   ├── auth/
-│   │   ├── Auth.jsx              # Auth component (signin/signup toggle)
-│   │   └── Auth.css              # Auth styling
-│   ├── dashboard/
-│   │   └── Dashboard.jsx         # Dashboard component
-│   └── Navbar.jsx                # Navigation component
-├── lib/
-│   └── supabase/
-│       ├── client.ts             # Browser client
-│       └── server.ts             # Server client
-├── layout.tsx                    # Root layout
-├── page.tsx                      # Home page
-├── globals.css                   # Global styles
-└── Home.css                      # Home page styles
-
-public/
-├── bg.mp4                        # Background video
-└── favicon.ico
-
-Root Files
-├── .env.local                    # Environment variables
-├── next.config.ts                # Next.js config
-├── tsconfig.json                 # TypeScript config
-├── tailwind.config.js            # Tailwind config
-├── postcss.config.mjs            # PostCSS config
-└── eslint.config.mjs             # ESLint config
-```
-
----
 
 ## 🚀 Installation
 
@@ -379,6 +337,11 @@ We have built a foundational "Dark Glassmorphic" design system with responsive l
 - Constructed the main `Overview` view featuring key startup metrics, an animated line chart for execution scores, and a prioritized action inbox.
 - Developed the 3-Column `AgentView` representing CTO, CFO, and COO departments. 
 - Integrated a live contextual chat interface simulating interaction with AI agents.
+
+**4. AI Backend & LLM Integration:**
+- Established a Python backend architecture (`backend/`) optimized for a future RAG pipeline.
+- Built a self-hosted `Meta-Llama-3-8B-Instruct` deployment pipeline using Google Colab and Ngrok for 100% free inference.
+- Implemented a floating glassmorphic AI advisor chat window (`FloatingChat.tsx`) in the dashboard, wired up to directly query the live Llama-3 endpoint.
 
 ---
 

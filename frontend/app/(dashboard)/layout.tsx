@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import LeftNavbar from "@/app/components/navigation/LeftNavbar";
 import TopNavbar from "@/app/components/navigation/TopNavbar";
+import FloatingChat from "@/app/components/ui/FloatingChat";
 
 export default function DashboardLayout({
   children,
@@ -18,6 +19,7 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
+      <FloatingChat />
     </div>
   );
 }
