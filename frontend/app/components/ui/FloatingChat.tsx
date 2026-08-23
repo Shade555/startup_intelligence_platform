@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 
 type Message = { role: "user" | "assistant"; content: string };
 
 export default function FloatingChat() {
+  const searchParams = useSearchParams();
+  const currentTab = searchParams.get("tab") || "overview";
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hi! I'm your AI financial advisor. How can I help?" }
@@ -29,6 +33,9 @@ export default function FloatingChat() {
     setIsLoading(true);
 
     try {
+      // 1. Secretly scrape all the text/numbers currently visible on the user's screen!
+      const screenData = document.querySelector("main")?.innerText || document.body.innerText;
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -37,7 +44,9 @@ export default function FloatingChat() {
         body: JSON.stringify({
           model: "llama3",
           messages: newMessages,
-          stream: false
+          stream: false,
+          tabContext: currentTab,
+          screenData: screenData.substring(0, 3000) // Keep it under context limits
         })
       });
 
