@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { GlassCard } from "../ui/GlassCard";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface AgentViewProps {
   agent: "CTO" | "CFO" | "COO";
@@ -105,8 +105,64 @@ const AGENT_DATA: Record<string, any> = {
 
 export default function AgentView({ agent }: AgentViewProps) {
   const router = useRouter();
-  const data = AGENT_DATA[agent];
   const [chatInput, setChatInput] = useState("");
+  
+  // Dynamic CTO Data State
+  const [dynamicData, setDynamicData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (agent === "CTO") {
+      const token = localStorage.getItem("github_token");
+      const repo = localStorage.getItem("github_repo");
+      
+      if (token && repo) {
+        setIsLoading(true);
+        fetch("/api/cto", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ github_token: token, repo_name: repo })
+        })
+        .then(res => res.json())
+        .then(resData => {
+          if (resData.error) throw new Error(resData.error);
+          setDynamicData(resData);
+        })
+        .catch(err => setError(err.message))
+        .finally(() => setIsLoading(false));
+      }
+    }
+  }, [agent]);
+
+  let data = AGENT_DATA[agent];
+
+  // Merge dynamic data for CTO
+  if (agent === "CTO" && dynamicData) {
+    data = {
+      ...data,
+      telemetry: {
+        title1: "Recent Commits", val1: dynamicData.metrics.recent_commits_30d.toString(), color1: "text-white",
+        title2: "Open Issues", val2: dynamicData.metrics.open_issues.toString(), color2: dynamicData.metrics.open_issues > 10 ? "text-[#ef4444]" : "text-[#10b981]",
+        title3: "Stars", val3: dynamicData.metrics.stars.toString(), color3: "text-white"
+      },
+      score: { label: "Developer Velocity", value: dynamicData.cto_scores.developer_velocity.toString(), max: "/100", bg: "bg-[#0f172a]" },
+      high: {
+        title: `Tech Debt Risk: ${dynamicData.cto_scores.tech_debt_risk}%`,
+        time: "Just now",
+        desc: dynamicData.ai_insights.join(" "),
+        meta: `${dynamicData.metrics.open_prs} Open Pull Requests`,
+        buttons: ["Review PRs"],
+        actions: ["Ignore"]
+      },
+      medium: {
+         title: `Analyzing Repo: ${dynamicData.repository}`,
+         time: "Just now",
+         desc: `Successfully pulled live metrics from GitHub via Python backend. The repository has ${dynamicData.metrics.forks} forks.`,
+         actions: ["Refresh Insights"]
+      }
+    }
+  }
 
   const handleAgentSwitch = (newAgent: string) => {
     router.push(`/dashboard?tab=${newAgent.toLowerCase()} agent`);

@@ -38,7 +38,7 @@ const integrations = [
     name: "GitHub", 
     description: "Sync repositories, track pull requests, and calculate developer velocity.", 
     icon: <GithubIcon size={28} className="text-white" />,
-    connected: true
+    connected: false
   },
   { 
     id: "jira", 
@@ -70,14 +70,75 @@ const integrations = [
   }
 ];
 
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 
 function SettingsContent() {
   const searchParams = useSearchParams();
   const currentTab = searchParams.get("tab")?.toLowerCase() || "profile";
 
+  // GitHub Settings State
+  const [githubToken, setGithubToken] = useState("");
+  const [githubRepo, setGithubRepo] = useState("");
+  const [isGithubConnected, setIsGithubConnected] = useState(false);
+  const [isConfiguringGithub, setIsConfiguringGithub] = useState(false);
+
+  useEffect(() => {
+    // Load from localStorage
+    const savedToken = localStorage.getItem("github_token");
+    const savedRepo = localStorage.getItem("github_repo");
+    if (savedToken && savedRepo) {
+      setGithubToken(savedToken);
+      setGithubRepo(savedRepo);
+      setIsGithubConnected(true);
+    }
+  }, []);
+
+  const saveGithubSettings = () => {
+    localStorage.setItem("github_token", githubToken);
+    localStorage.setItem("github_repo", githubRepo);
+    setIsGithubConnected(true);
+    setIsConfiguringGithub(false);
+  };
+
   return (
-    <div className="max-w-[1000px] mx-auto py-8">
+    <div className="max-w-[1000px] mx-auto py-8 relative">
+      {isConfiguringGithub && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#131313] border border-[rgba(255,255,255,0.1)] p-6 rounded-2xl w-full max-w-md shadow-2xl">
+            <h2 className="text-xl font-bold text-white mb-4">Connect GitHub</h2>
+            <p className="text-sm text-[#a1a1aa] mb-4">
+              Enter a Personal Access Token (PAT) and a repository (e.g., <code>owner/repo</code>) to allow the CTO Agent to analyze your codebase.
+            </p>
+            <div className="space-y-4 mb-6">
+              <div>
+                <label className="block text-xs font-semibold text-[#a1a1aa] mb-1">GitHub PAT</label>
+                <input 
+                  type="password" 
+                  value={githubToken}
+                  onChange={(e) => setGithubToken(e.target.value)}
+                  placeholder="ghp_xxxxxxxxxxxx"
+                  className="w-full bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,0.1)] rounded-lg py-2 pl-3 text-sm text-white focus:outline-none focus:border-[rgba(255,255,255,0.3)]"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#a1a1aa] mb-1">Repository Name</label>
+                <input 
+                  type="text" 
+                  value={githubRepo}
+                  onChange={(e) => setGithubRepo(e.target.value)}
+                  placeholder="e.g. facebook/react"
+                  className="w-full bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,0.1)] rounded-lg py-2 pl-3 text-sm text-white focus:outline-none focus:border-[rgba(255,255,255,0.3)]"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3">
+              <Button variant="secondary" onClick={() => setIsConfiguringGithub(false)}>Cancel</Button>
+              <Button onClick={saveGithubSettings}>Save & Connect</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {currentTab === "integrations" ? (
         <div className="animate-in fade-in duration-500">
           <div className="mb-8">
@@ -88,13 +149,16 @@ function SettingsContent() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {integrations.map((integration) => (
+            {integrations.map((integration) => {
+              const isConnected = integration.id === "github" ? isGithubConnected : integration.connected;
+              
+              return (
               <GlassCard key={integration.id} size="md" hoverEffect className="flex flex-col">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-14 h-14 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center shadow-[inset_0_1px_rgba(255,255,255,0.1)]">
                     {integration.icon}
                   </div>
-                  {integration.connected ? (
+                  {isConnected ? (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[rgba(16,185,129,0.08)] text-[#10b981] border border-[rgba(16,185,129,0.18)]">
                       <CheckCircle2 size={14} />
                       Connected
@@ -112,19 +176,19 @@ function SettingsContent() {
                 </p>
                 
                 <div className="mt-auto">
-                  {integration.connected ? (
-                    <Button variant="secondary" className="w-full">
+                  {isConnected ? (
+                    <Button variant="secondary" className="w-full" onClick={() => integration.id === "github" && setIsConfiguringGithub(true)}>
                       Configure Settings
                     </Button>
                   ) : (
-                    <Button variant="primary" className="w-full gap-2">
+                    <Button variant="primary" className="w-full gap-2" onClick={() => integration.id === "github" && setIsConfiguringGithub(true)}>
                       <LinkIcon size={16} />
                       Connect {integration.name}
                     </Button>
                   )}
                 </div>
               </GlassCard>
-            ))}
+            )})}
           </div>
         </div>
       ) : currentTab === "account" ? (
