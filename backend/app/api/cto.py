@@ -82,6 +82,11 @@ def analyze_github_repo(request: RepoInsightRequest, x_github_token: str = Heade
         }
 
     except GithubException as e:
-        raise HTTPException(status_code=400, detail=f"GitHub API Error: {e.data.get('message', str(e))}")
+        err_msg = str(e)
+        if hasattr(e, 'data') and isinstance(e.data, dict):
+            err_msg = e.data.get('message', str(e))
+        raise HTTPException(status_code=400, detail=f"GitHub API Error: {err_msg}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Internal CTO Error: {str(e)}")
