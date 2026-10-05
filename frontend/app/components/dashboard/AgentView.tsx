@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { GlassCard } from "../ui/GlassCard";
+import LiveCTOInsights from "./LiveCTOInsights";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -242,105 +243,16 @@ export default function AgentView({ agent }: AgentViewProps) {
       </div>
 
       {/* MIDDLE COLUMN: Priority Inbox */}
-      <div className="flex-1 flex flex-col gap-6 max-w-[500px]">
-        <div className="flex justify-end text-xs text-[#71717a] pb-2 border-b border-[rgba(255,255,255,0.05)]">
-          Sorted by priority
-        </div>
-
-        {/* High Priority */}
-        <div>
-          <div className="text-xs font-bold text-[#ef4444] uppercase tracking-wider mb-3">High Priority</div>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="rounded-xl border-l-2 border-[#ef4444] bg-[#1a1a1a] p-5 shadow-lg relative overflow-hidden"
-          >
-            {/* Subtle glow behind card */}
-            <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-[rgba(239,68,68,0.1)] to-transparent pointer-events-none" />
-            
-            <div className="flex items-start justify-between mb-3 relative z-10">
-              <div className="flex items-start gap-2">
-                <div className="w-4 h-4 rounded-full bg-[#ef4444]/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" />
-                </div>
-                <h3 className="font-semibold text-[#ef4444] text-sm leading-tight">{data.high.title}</h3>
-              </div>
-              <span className="text-xs text-[#71717a] whitespace-nowrap ml-4">{data.high.time}</span>
-            </div>
-            
-            <p className="text-sm text-[#e4e4e7] mb-4 leading-relaxed relative z-10">{data.high.desc}</p>
-            
-            {data.high.meta && (
-              <div className="text-xs text-[#a1a1aa] mb-5 relative z-10 flex gap-4">
-                <span>{data.high.meta}</span>
-              </div>
-            )}
-            
-            <div className="flex flex-wrap gap-2 relative z-10">
-              {data.high.buttons?.map((btn: string) => (
-                <button key={btn} className="bg-[#f87171] hover:bg-[#ef4444] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors shadow-[0_0_15px_rgba(239,68,68,0.3)]">
-                  {btn}
-                </button>
-              ))}
-              {data.high.actions?.map((act: string) => (
-                <button key={act} className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] text-[#e4e4e7] text-xs font-medium px-4 py-2 rounded-lg transition-colors">
-                  {act}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Medium Priority */}
-        <div>
-          <div className="text-xs font-bold text-[#fbbf24] uppercase tracking-wider mb-3">Medium Priority</div>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="rounded-xl border-l-2 border-[#fbbf24] bg-[#1a1a1a] p-5 shadow-lg relative overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-[rgba(251,191,36,0.05)] to-transparent pointer-events-none" />
-            
-            <div className="flex items-start justify-between mb-3 relative z-10">
-              <div className="flex items-start gap-2">
-                <div className="w-4 h-4 rounded-full bg-[#fbbf24]/20 flex items-center justify-center mt-0.5 shrink-0">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#fbbf24]" />
-                </div>
-                <h3 className="font-semibold text-[#fbbf24] text-sm leading-tight">{data.medium.title}</h3>
-              </div>
-              <span className="text-xs text-[#71717a] whitespace-nowrap ml-4">{data.medium.time}</span>
-            </div>
-            
-            <p className="text-sm text-[#e4e4e7] mb-5 leading-relaxed relative z-10">{data.medium.desc}</p>
-            
-            <div className="flex flex-wrap gap-2 relative z-10">
-              {data.medium.actions?.map((act: string) => (
-                <button key={act} className="bg-[rgba(255,255,255,0.05)] hover:bg-[rgba(255,255,255,0.1)] border border-[rgba(255,255,255,0.1)] text-[#e4e4e7] text-xs font-medium px-4 py-2 rounded-lg transition-colors">
-                  {act}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Low Priority */}
-        <div>
-          <div className="text-xs font-bold text-[#71717a] uppercase tracking-wider mb-3">Low Priority</div>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="rounded-xl bg-[#1a1a1a] p-4 flex items-center gap-3 border border-[rgba(255,255,255,0.03)]"
-          >
-            <div className="w-5 h-5 rounded bg-[rgba(255,255,255,0.05)] flex items-center justify-center shrink-0">
-              <svg className="w-3 h-3 text-[#71717a]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/></svg>
-            </div>
-            <span className="text-sm text-[#a1a1aa]">{data.low}</span>
-          </motion.div>
-        </div>
+      <div className="flex-1 flex flex-col gap-6 max-w-[600px] w-full">
+        {agent === "CTO" && dynamicData ? (
+          <LiveCTOInsights githubData={dynamicData} repository={dynamicData.repository} />
+        ) : (
+          <div className="text-sm text-[#71717a] mt-10">Select CTO to view live generated insights. CFO and COO are currently using placeholder data.</div>
+        )}
       </div>
+    </div>
+  );
+}
 
-      </div>);}
+
 
