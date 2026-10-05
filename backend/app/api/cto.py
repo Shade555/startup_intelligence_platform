@@ -45,7 +45,9 @@ def analyze_github_repo(request: RepoInsightRequest, x_github_token: str = Heade
 
         # Languages
         langs = repo.get_languages()
-        top_language = max(langs, key=langs.get) if langs else "Unknown"
+        # PyGithub sometimes includes 'url': 'https://...' in the dict
+        clean_langs = {k: v for k, v in langs.items() if isinstance(v, int)}
+        top_language = max(clean_langs, key=clean_langs.get) if clean_langs else "Unknown"
         
         last_updated = "Unknown"
         if repo.updated_at:
