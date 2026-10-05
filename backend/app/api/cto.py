@@ -30,14 +30,18 @@ def analyze_github_repo(request: RepoInsightRequest, x_github_token: str = Heade
         
         # Fetch up to 50 commits to avoid rate limits/timeouts
         commit_count = 0
-        for _ in commits[:50]:
+        for _ in commits:
             commit_count += 1
+            if commit_count >= 50:
+                break
             
         # Pull Requests safely
         pulls = repo.get_pulls(state='open')
         open_prs = 0
-        for _ in pulls[:50]:
+        for _ in pulls:
             open_prs += 1
+            if open_prs >= 50:
+                break
 
         # Languages
         langs = repo.get_languages()
