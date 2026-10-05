@@ -103,37 +103,65 @@ function SettingsContent() {
   return (
     <div className="max-w-[1000px] mx-auto py-8 relative">
       {isConfiguringGithub && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-[#131313] border border-[rgba(255,255,255,0.1)] p-6 rounded-2xl w-full max-w-md shadow-2xl">
-            <h2 className="text-xl font-bold text-white mb-4">Connect GitHub</h2>
-            <p className="text-sm text-[#a1a1aa] mb-4">
-              Enter a Personal Access Token (PAT) and a repository (e.g., <code>owner/repo</code>) to allow the CTO Agent to analyze your codebase.
-            </p>
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="block text-xs font-semibold text-[#a1a1aa] mb-1">GitHub PAT</label>
-                <input 
-                  type="password" 
-                  value={githubToken}
-                  onChange={(e) => setGithubToken(e.target.value)}
-                  placeholder="ghp_xxxxxxxxxxxx"
-                  className="w-full bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,0.1)] rounded-lg py-2 pl-3 text-sm text-white focus:outline-none focus:border-[rgba(255,255,255,0.3)]"
-                />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+          <div className="relative w-full max-w-md p-1 rounded-3xl bg-gradient-to-br from-[rgba(16,185,129,0.5)] via-[rgba(16,185,129,0.1)] to-transparent shadow-[0_0_40px_rgba(16,185,129,0.2)]">
+            <div className="bg-[#0c0c0c] border border-[rgba(255,255,255,0.05)] p-8 rounded-[22px] shadow-2xl relative overflow-hidden">
+              {/* Background Glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-[#10b981] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
+
+              <div className="flex items-center gap-3 mb-6 relative z-10">
+                <div className="w-10 h-10 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center">
+                  <GithubIcon size={20} className="text-white" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-white leading-tight">Connect GitHub</h2>
+                  <p className="text-xs text-[#10b981] font-semibold tracking-wide uppercase">CTO Agent Integration</p>
+                </div>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-[#a1a1aa] mb-1">Repository Name</label>
-                <input 
-                  type="text" 
-                  value={githubRepo}
-                  onChange={(e) => setGithubRepo(e.target.value)}
-                  placeholder="e.g. facebook/react"
-                  className="w-full bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,0.1)] rounded-lg py-2 pl-3 text-sm text-white focus:outline-none focus:border-[rgba(255,255,255,0.3)]"
-                />
+              
+              <p className="text-sm text-[#a1a1aa] mb-6 relative z-10">
+                Securely link your repository to enable live codebase analysis, tech debt tracking, and developer velocity metrics.
+              </p>
+              
+              <div className="space-y-5 mb-8 relative z-10">
+                <div>
+                  <label className="block text-xs font-semibold text-white mb-2 ml-1">Personal Access Token (PAT)</label>
+                  <input 
+                    type="password" 
+                    value={githubToken}
+                    onChange={(e) => setGithubToken(e.target.value)}
+                    placeholder="ghp_xxxxxxxxxxxx"
+                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-xl py-3 pl-4 pr-4 text-sm text-white placeholder:text-[#52525b] focus:outline-none focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] transition-all"
+                  />
+                  <p className="text-[10px] text-[#71717a] mt-1.5 ml-1">Requires `repo` permissions to analyze private repositories.</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-white mb-2 ml-1">Target Repository</label>
+                  <input 
+                    type="text" 
+                    value={githubRepo}
+                    onChange={(e) => setGithubRepo(e.target.value)}
+                    placeholder="e.g. facebook/react"
+                    className="w-full bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.1)] rounded-xl py-3 pl-4 pr-4 text-sm text-white placeholder:text-[#52525b] focus:outline-none focus:border-[#10b981] focus:ring-1 focus:ring-[#10b981] transition-all"
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex justify-end gap-3">
-              <Button variant="secondary" onClick={() => setIsConfiguringGithub(false)}>Cancel</Button>
-              <Button onClick={saveGithubSettings}>Save & Connect</Button>
+              
+              <div className="flex justify-end gap-3 relative z-10">
+                <button 
+                  onClick={() => setIsConfiguringGithub(false)}
+                  className="px-5 py-2.5 rounded-full text-sm font-semibold text-[#a1a1aa] hover:text-white hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={saveGithubSettings}
+                  className="px-6 py-2.5 rounded-full text-sm font-bold bg-[#10b981] text-black hover:bg-[#34d399] hover:shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all flex items-center gap-2"
+                >
+                  <CheckCircle2 size={16} />
+                  Connect
+                </button>
+              </div>
             </div>
           </div>
         </div>

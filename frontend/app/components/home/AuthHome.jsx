@@ -21,18 +21,20 @@ export default function AuthHome() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data: authData, error: authError } = await supabase.auth.getUser();
+      const { data: authData, error: authError } = await supabase.auth.getSession();
 
-      if (authError || !authData.user) {
+      if (authError || !authData.session?.user) {
         router.push("/auth/signin");
         return;
       }
+      
+      const user = authData.session.user;
 
       // Fetch user profile
       const { data: profileRow, error: profileError } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", authData.user.id)
+        .eq("id", user.id)
         .maybeSingle();
 
       if (profileError || !profileRow) {
@@ -46,7 +48,7 @@ export default function AuthHome() {
       const { data: startupRows } = await supabase
         .from("startups")
         .select("*")
-        .eq("created_by", authData.user.id)
+        .eq("created_by", user.id)
         .order("updated_at", { ascending: false });
 
       if (startupRows) {

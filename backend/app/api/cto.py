@@ -33,21 +33,26 @@ def analyze_github_repo(request: RepoInsightRequest, x_github_token: str = Heade
         pulls = repo.get_pulls(state='open')
         open_prs = pulls.totalCount
 
+        # Languages
+        langs = repo.get_languages()
+        total_bytes = sum(langs.values())
+        top_language = max(langs, key=langs.get) if langs else "Unknown"
+
         # Generate "CTO Insights"
         tech_debt_score = min(100, (open_issues * 2) + (open_prs * 3))
         velocity_score = min(100, (commit_count / 30.0) * 10)  # simple metric
         
         insights = []
         if commit_count < 10:
-            insights.append("Low development velocity detected in the last 30 days. Consider unblocking developers.")
+            insights.append("Critical: Low development velocity detected in the last 30 days. Consider unblocking developers.")
         else:
             insights.append(f"Healthy commit velocity ({commit_count} commits this month).")
             
         if open_issues > 20:
-            insights.append(f"High number of open issues ({open_issues}). Tech debt might be accumulating.")
+            insights.append(f"Warning: High number of open issues ({open_issues}). Tech debt might be accumulating.")
             
         if open_prs > 5:
-            insights.append(f"There are {open_prs} open PRs. Code reviews might be bottlenecking the pipeline.")
+            insights.append(f"Action Required: There are {open_prs} open PRs. Code reviews might be bottlenecking the pipeline.")
 
         return {
             "repository": repo.full_name,
@@ -57,6 +62,8 @@ def analyze_github_repo(request: RepoInsightRequest, x_github_token: str = Heade
                 "recent_commits_30d": commit_count,
                 "stars": stars,
                 "forks": forks,
+                "top_language": top_language,
+                "last_updated": repo.updated_at.strftime("%Y-%m-%d %H:%M")
             },
             "cto_scores": {
                 "tech_debt_risk": tech_debt_score,

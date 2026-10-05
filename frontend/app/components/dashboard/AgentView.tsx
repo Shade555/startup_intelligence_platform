@@ -142,25 +142,26 @@ export default function AgentView({ agent }: AgentViewProps) {
     data = {
       ...data,
       telemetry: {
-        title1: "Recent Commits", val1: dynamicData.metrics.recent_commits_30d.toString(), color1: "text-white",
-        title2: "Open Issues", val2: dynamicData.metrics.open_issues.toString(), color2: dynamicData.metrics.open_issues > 10 ? "text-[#ef4444]" : "text-[#10b981]",
-        title3: "Stars", val3: dynamicData.metrics.stars.toString(), color3: "text-white"
+        title1: "Recent Commits", val1: dynamicData.metrics.recent_commits_30d.toString(), color1: "text-[#10b981]",
+        title2: "Open PRs", val2: dynamicData.metrics.open_prs.toString(), color2: dynamicData.metrics.open_prs > 5 ? "text-[#fbbf24]" : "text-[#10b981]",
+        title3: "Top Language", val3: dynamicData.metrics.top_language || "Unknown", color3: "text-[#3b82f6]"
       },
       score: { label: "Developer Velocity", value: dynamicData.cto_scores.developer_velocity.toString(), max: "/100", bg: "bg-[#0f172a]" },
       high: {
         title: `Tech Debt Risk: ${dynamicData.cto_scores.tech_debt_risk}%`,
         time: "Just now",
-        desc: dynamicData.ai_insights.join(" "),
-        meta: `${dynamicData.metrics.open_prs} Open Pull Requests`,
-        buttons: ["Review PRs"],
+        desc: dynamicData.ai_insights.find((i: string) => i.startsWith("Critical")) || dynamicData.ai_insights[0] || "No critical issues detected.",
+        meta: `${dynamicData.metrics.open_issues} Open Issues`,
+        buttons: ["Review Issues"],
         actions: ["Ignore"]
       },
       medium: {
-         title: `Analyzing Repo: ${dynamicData.repository}`,
+         title: `Active Pipeline bottlenecks`,
          time: "Just now",
-         desc: `Successfully pulled live metrics from GitHub via Python backend. The repository has ${dynamicData.metrics.forks} forks.`,
-         actions: ["Refresh Insights"]
-      }
+         desc: dynamicData.ai_insights.find((i: string) => i.startsWith("Action Required")) || `Repository currently has ${dynamicData.metrics.open_prs} open PRs waiting for review.`,
+         actions: ["View PRs", "Dismiss"]
+      },
+      low: `Repo ${dynamicData.repository} synced. Last updated on ${dynamicData.metrics.last_updated}`
     }
   }
 
@@ -341,58 +342,5 @@ export default function AgentView({ agent }: AgentViewProps) {
         </div>
       </div>
 
-      {/* RIGHT COLUMN: Chat Interface */}
-      <div className="w-full lg:w-[350px] shrink-0">
-        <GlassCard className="flex flex-col h-[500px] !bg-[#131313]/90 border-[rgba(255,255,255,0.05)] overflow-hidden sticky top-[94px]">
-          {/* Chat Header */}
-          <div className="px-4 py-3 border-b border-[rgba(255,255,255,0.05)] flex justify-between items-center bg-[#1a1a1a]/50">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded bg-[#1e293b] flex items-center justify-center text-[#3b82f6]">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-              </div>
-              <span className="font-semibold text-sm text-white">{agent} agent · chat</span>
-            </div>
-            <button className="text-[#71717a] hover:text-white transition-colors">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/></svg>
-            </button>
-          </div>
-          
-          {/* Chat Body */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-            <div className="text-xs text-[#71717a] border-b border-[rgba(255,255,255,0.05)] pb-2 mb-2">
-              {data.chatInit.trigger}
-            </div>
-            
-            {data.chatInit.messages.map((msg: any, i: number) => (
-              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-sm ${
-                  msg.role === 'user' 
-                    ? 'bg-[rgba(255,255,255,0.1)] text-white rounded-br-sm' 
-                    : 'bg-[#1e293b]/50 text-[#e4e4e7] border border-[#3b82f6]/20 rounded-bl-sm'
-                }`}>
-                  {msg.text}
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Chat Input */}
-          <div className="p-4 border-t border-[rgba(255,255,255,0.05)] bg-[#1a1a1a]/30">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder={`Message ${agent} agent...`}
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                className="w-full bg-[rgba(0,0,0,0.4)] border border-[rgba(255,255,255,0.1)] rounded-xl py-2.5 pl-4 pr-10 text-sm text-white placeholder:text-[#52525b] focus:outline-none focus:border-[rgba(255,255,255,0.2)] transition-colors"
-              />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-lg bg-[rgba(255,255,255,0.1)] hover:bg-[rgba(255,255,255,0.2)] text-white transition-colors">
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-              </button>
-            </div>
-          </div>
-        </GlassCard>
-      </div>
-    </div>
-  );
-}
+      </div>);}
+
